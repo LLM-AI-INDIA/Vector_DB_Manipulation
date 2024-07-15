@@ -1,18 +1,20 @@
 import streamlit as st
+st.set_page_config(layout="wide")
 from streamlit_option_menu import option_menu
 from src.main import main_interface
 
-st.set_page_config(layout="wide")
-st.markdown(
-    """
-    <style>
-    body {
-        zoom: 90%;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+
+
+# st.markdown(
+#     """
+#     <style>
+#     body {
+#         zoom: 90%;
+#     }
+#     </style>
+#     """,
+#     unsafe_allow_html=True,
+# )
 from PIL import Image
 import os
 
@@ -20,7 +22,7 @@ import os
 with open('style/final.css') as f:
         st.markdown(f"<style>{f.read()}</style>",unsafe_allow_html=True)
     
-imcol1, imcol2, imcol3 = st.columns((7,5,2))
+imcol1, imcol2, imcol3 = st.columns((3,4,2))
 with imcol1:
     st.write("")
 with imcol2:

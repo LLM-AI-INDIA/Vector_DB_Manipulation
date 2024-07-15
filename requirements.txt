@@ -5,3 +5,8 @@ Pillow==10.4.0
 sentence_transformers==3.0.1
 streamlit==1.22.0
 streamlit_option_menu==0.3.13
+torchvision
+torch
+pydub
+speechrecognition
+opencv-python

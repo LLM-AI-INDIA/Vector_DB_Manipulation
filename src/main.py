@@ -2,6 +2,9 @@ import streamlit as st
 import numpy as np
 import faiss
 from sentence_transformers import SentenceTransformer
+from src.image import image_operations
+from src.voice import voice_operations
+from src.video import video_operations
 import pandas as pd
 
 # Load a pre-trained sentence transformer model
@@ -14,8 +17,7 @@ texts = ["The athlete's rigorous training regimen and disciplined lifestyle are 
 embeddings = np.array([])
 
 
-# if 'flag4' not in st.session_state:
-#     st.session_state['flag4'] = False
+
 
 # I do run daily to maintain my fitness
 
@@ -109,7 +111,7 @@ def main_interface():
         st.markdown("<p style='text-align: left; color: black; font-size:20px;'><span style='font-weight: bold'>Select Database</span></p>", unsafe_allow_html=True)
     with col2:
         st.write("")
-        vAR_DB=st.selectbox("",["Select", "Faiss", "Milvus"],key="db")
+        vAR_DB=st.selectbox("",["Select", "Faiss", "Milvus"],key="db1")
 
     if vAR_DB != "Select":
         with col1:
@@ -118,7 +120,7 @@ def main_interface():
             st.markdown("<p style='text-align: left; color: black; font-size:20px;'><span style='font-weight: bold'>Database Operation</span></p>", unsafe_allow_html=True)
         with col2:
             st.write("")
-            vAR_manipulate=st.selectbox("",["Select", "Insert", "Modify", "Delete"],key="edit")
+            vAR_manipulate=st.selectbox("",["Select", "Insert", "Modify", "Delete"],key="edit2")
 
         if vAR_manipulate != "Select":
             with col1:
@@ -126,7 +128,7 @@ def main_interface():
                 st.write("")
                 st.markdown("<p style='text-align: left; color: black; font-size:20px;'><span style='font-weight: bold'>Data Type</span></p>", unsafe_allow_html=True)
             with col2:
-                vAR_type=st.selectbox("",["Select", "Text", "Image", "Voice", "Video"], key="type")
+                vAR_type=st.selectbox("",["Select", "Text", "Image", "Voice", "Video"], key="type3")
             
             if vAR_type=="Text" and vAR_manipulate=="Insert":
                 with col1:
@@ -134,20 +136,20 @@ def main_interface():
                     st.write("")
                     st.markdown("<p style='text-align: left; color: black; font-size:20px;'><span style='font-weight: bold'>Type of input</span></p>", unsafe_allow_html=True)
                 with col2:
-                    vAR_type_input=st.selectbox("",["Select","Raw text","Text file"], key="typeofinput")
+                    vAR_type_input=st.selectbox("",["Select","Raw text","Text file"], key="typeofinput4")
                 
                 if vAR_type_input == "Raw text":
                     df = create_dataframe()
                     with c1:
                         st.write("# ")
-                        
+                        st.markdown("<p style='text-align: center; color: black; font-size:16px;'><span style='font-weight: bold'>Vector DB data (after DB operation)</span></p>", unsafe_allow_html=True)
                         st.dataframe(df)
                     with col3:
                         st.write("### ")
                         st.write("")
                         st.markdown("<p style='text-align: left; color: black; font-size:20px;'><span style='font-weight: bold'>Enter the Text</span></p>", unsafe_allow_html=True)
                     with col4:
-                        vAR_input=st.text_input("",key="textinput")
+                        vAR_input=st.text_input("",key="textinput5")
                     if vAR_input:
                         if st.session_state['flag1'] == False:
                             add_text(vAR_input)
@@ -155,6 +157,8 @@ def main_interface():
                             st.session_state['flag1'] = True
                         with c2:
                             st.write("# ")
+                            st.markdown("<p style='text-align: center; color: black; font-size:16px;'><span style='font-weight: bold'>Vector DB data (after DB operation)</span></p>", unsafe_allow_html=True)
+                    
                             st.dataframe(df)
                         with col5:
                             st.write("# ")
@@ -162,7 +166,7 @@ def main_interface():
                             st.markdown("<p style='text-align: left; color: black; font-size:20px;'><span style='font-weight: bold'>Similarity Search</span></p>", unsafe_allow_html=True)
                         with col6:
                             st.write("")
-                            vAR_search_input=st.text_input("",key="textsearchinput")
+                            vAR_search_input=st.text_input("",key="textsearchinput6")
                             st.write("")
                             if st.button("Search"):
                                 with c3:
@@ -172,12 +176,19 @@ def main_interface():
                                     st.info("Rank 1 :\n\n"+texts[I[0][0]]+"\n\n Rank 2 : \n\n"+texts[I[0][1]])
 
                 elif vAR_type_input == "Text file":
+                    df = create_dataframe()
+                    with c1:
+
+                        st.write("# ")
+                        st.markdown("<p style='text-align: center; color: black; font-size:16px;'><span style='font-weight: bold'>Vector DB data (before DB operation)</span></p>", unsafe_allow_html=True)
+                        
+                        st.dataframe(df)
                     with col3:
                         st.write("# ")
                         st.write("")
                         st.markdown("<p style='text-align: left; color: black; font-size:20px;'><span style='font-weight: bold'>Upload the Text File</span></p>", unsafe_allow_html=True)
                     with col4:
-                        vAR_fileinput=st.file_uploader("",key="textupload")
+                        vAR_fileinput=st.file_uploader("",key="textupload7")
                     if vAR_fileinput:
                         file_text = vAR_fileinput.read().decode('utf-8')
                         sentences = file_text.split('.')
@@ -187,6 +198,7 @@ def main_interface():
                             df = create_dataframe()
                             with c2:
                                 st.write("## ")
+                                st.markdown("<p style='text-align: center; color: black; font-size:16px;'><span style='font-weight: bold'>Vector DB data (after DB operation)</span></p>", unsafe_allow_html=True)
                                 st.dataframe(df)
                             st.session_state['flag4'] = True
                         with col5:
@@ -195,7 +207,7 @@ def main_interface():
                             st.markdown("<p style='text-align: left; color: black; font-size:20px;'><span style='font-weight: bold'>Similarity Search</span></p>", unsafe_allow_html=True)
                         with col6:
                             st.write("")
-                            vAR_search_input=st.text_input("",key="textsearchinput")
+                            vAR_search_input=st.text_input("",key="textsearchinput8")
                             st.write("")
                             if st.button("Search"):
                                 with c3:
@@ -208,28 +220,31 @@ def main_interface():
                 df = create_dataframe()
                 with c1:
                     st.write("# ")
+                    st.markdown("<p style='text-align: center; color: black; font-size:16px;'><span style='font-weight: bold'>Vector DB data (before DB operation)</span></p>", unsafe_allow_html=True)
+                    
                     st.dataframe(df)
                 with col3:
                     st.write("### ")
                     st.write("")
                     st.markdown("<p style='text-align: left; color: black; font-size:20px;'><span style='font-weight: bold'>Enter the Text</span></p>", unsafe_allow_html=True)
                 with col4:
-                    vAR_input_to_m = st.text_input("", key="modifytextinput")
+                    vAR_input_to_m = st.text_input("", key="modifytextinput9")
                 if vAR_input_to_m:
                     with col3:
                         st.write("### ")
                         st.write("")
                         st.markdown("<p style='text-align: left; color: black; font-size:20px;'><span style='font-weight: bold'>Which Index</span></p>", unsafe_allow_html=True)
                     with col4:
-                        idx=st.number_input("", min_value=0, max_value=len(texts)-1, step=1, key="mod")
+                        idx=st.number_input("", min_value=0, max_value=len(texts)-1, step=1, key="mod10")
                         st.write("")
                         if st.button("Modify"):
                             if st.session_state['flag2'] == False:
                                 modify_text(idx, vAR_input_to_m)
+                                df = create_dataframe()
                                 st.session_state['flag2'] = True
-                            df = create_dataframe()
                             with c2:
                                 st.write("# ")
+                                st.markdown("<p style='text-align: center; color: black; font-size:16px;'><span style='font-weight: bold'>Vector DB data (after DB operation)</span></p>", unsafe_allow_html=True)                                
                                 st.dataframe(df)
                         with col5:
                             st.write("# ")
@@ -237,11 +252,11 @@ def main_interface():
                             st.markdown("<p style='text-align: left; color: black; font-size:20px;'><span style='font-weight: bold'>Similarity Search</span></p>", unsafe_allow_html=True)
                         with col6:
                             st.write("")
-                            vAR_search_input=st.text_input("",key="textsearchinput")
+                            vAR_sea_input=st.text_input("",key="textmodinput11")
                             st.write("")
                             if st.button("Search"):
                                 with c3:
-                                    query_embedding = model.encode([vAR_search_input])
+                                    query_embedding = model.encode([vAR_sea_input])
                                     D, I = index.search(query_embedding, k=2)
                                     st.write("")
                                     st.info("Rank 1 :\n\n"+texts[I[0][0]]+"\n\n Rank 2 : \n\n"+texts[I[0][1]])
@@ -250,13 +265,15 @@ def main_interface():
                 df = create_dataframe()
                 with c1:
                     st.write("# ")
+                    st.markdown("<p style='text-align: center; color: black; font-size:16px;'><span style='font-weight: bold'>Vector DB data (before DB operation)</span></p>", unsafe_allow_html=True)
+                                
                     st.dataframe(df)
                 with col3:
                     st.write("### ")
                     st.write("")
                     st.markdown("<p style='text-align: left; color: black; font-size:20px;'><span style='font-weight: bold'>Index to delete</span></p>", unsafe_allow_html=True)
                 with col4:
-                    idx=st.number_input("", min_value=0, max_value=len(texts)-1, step=1, key="del")
+                    idx=st.number_input("", min_value=0, max_value=len(texts)-1, step=1, key="del12")
                     st.write("")
                     if st.button("Delete"):
                         if st.session_state['flag3']==False:
@@ -265,6 +282,8 @@ def main_interface():
                         df = create_dataframe()
                         with c2:
                             st.write("# ")
+                            st.markdown("<p style='text-align: center; color: black; font-size:16px;'><span style='font-weight: bold'>Vector DB data (after DB operation)</span></p>", unsafe_allow_html=True)
+                                
                             st.dataframe(df)
                     with col5:
                         st.write("# ")
@@ -272,7 +291,7 @@ def main_interface():
                         st.markdown("<p style='text-align: left; color: black; font-size:20px;'><span style='font-weight: bold'>Similarity Search</span></p>", unsafe_allow_html=True)
                     with col6:
                         st.write("")
-                        vAR_search_input=st.text_input("",key="textsearchinput")
+                        vAR_search_input=st.text_input("",key="textsearchinput13")
                         st.write("")
                         if st.button("Search"):
                             with c3:
@@ -284,10 +303,12 @@ def main_interface():
 
 
 
-
-
-        # elif vAR_type =="Image":
-        #     pass
+            elif vAR_type =="Image" and vAR_manipulate!="Select":
+                image_operations(vAR_manipulate)
+            elif vAR_type=="Voice" and vAR_manipulate!="Select":
+                voice_operations(vAR_manipulate)
+            elif vAR_type=="Video" and vAR_manipulate!="Select":
+                video_operations(vAR_manipulate)
 
                 
                 
